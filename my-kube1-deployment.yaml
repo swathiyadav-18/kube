@@ -1,28 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: my-kube1-deployment
-  labels:
-    app: my-kube-app1
+  name: myapp-deployment
 spec:
-  replicas: 2  # Number of replicas
+  replicas: 1
   selector:
     matchLabels:
-      app: my-kube-app1
+      app: myapp
   template:
     metadata:
       labels:
-        app: my-kube-app1
+        app: myapp
     spec:
       containers:
-        - name: my-kube1-container
-          image: shiv4j/my-kube1:latest  # Your Docker image
-          ports:
-            - containerPort: 3001  # The port where the Node.js app is listening
-          resources:
-            limits:
-              memory: "512Mi"
-              cpu: "500m"
-          env:
-            - name: NODE_ENV
-              value: "production"
+      - name: myapp
+        image: myapp:latest     # Make sure image name matches Dockerfile & Jenkinsfile
+        ports:
+        - containerPort: 3000
