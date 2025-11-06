@@ -1,17 +1,21 @@
-# Use official Node.js image
 FROM node:18
 
-# Set working directory
 WORKDIR /usr/src/app
 
-# Copy package files and install dependencies
+# Copy package files first
 COPY package*.json ./
-RUN npm cache clean --force && npm install --legacy-peer-deps --production
 
-# Copy rest of app files
+# Clean npm cache and force a fresh install with retries
+RUN npm cache clean --force \
+ && npm config set fetch-retries 5 \
+ && npm config set fetch-retry-factor 2 \
+ && npm config set fetch-retry-mintimeout 20000 \
+ && npm config set fetch-retry-maxtimeout 120000 \
+ && npm install --legacy-peer-deps --production
+
+# Copy rest of app
 COPY . .
-# Expose port
+
 EXPOSE 3000
 
-# Start app
 CMD ["node", "app.js"]
